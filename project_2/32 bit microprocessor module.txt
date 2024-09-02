@@ -1,0 +1,19 @@
+module microprocessor_32_bit( input clk,
+input [31:0] instructionset,
+output wire[31:0] out,
+output wire invalid);
+wire[6:0] opcode;
+wire[2:0] funcn;
+wire[4:0]rs1_address,rs2_address,rd_address;
+wire[3:0]oper;
+wire[31:0] rs1,rs2;
+wire [31:0]rd;
+wire [4:0]w1,w2;
+decode_unit f1(clk,instructionset, opcode,funcn,rs1_address,rs2_address,rd_address,w1,w2,rs1,rs2)
+delay f10(clk,rd_address,w1);
+delay f11 (clk,w1,w2);
+control_unit f2 (clk,opcode,funcn,oper,invalid);
+register_bank f3 (clk,rs1_address,rs2_address,w2,rd,rs1,rs2);
+alu_unit f4 (clk,oper,rs1,rs2,rd);
+assign out = rd;
+endmodule

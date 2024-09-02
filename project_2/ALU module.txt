@@ -1,0 +1,43 @@
+module alu_unit( input clk,
+input [3:0] operation,
+input [31:0] rs1,
+input [31:0] rs2,
+output reg[31:0] rd);
+always @(posedge clk)begin
+case(operation)
+0:begin
+rd = rs1+rs2;
+end
+1:begin
+rd = rs1-rs2;
+end
+2:begin
+rd = rs1 << (rs2[4:0]);
+end
+3:begin
+rd = (rs1 < rs2)?1:0;
+end
+4:begin
+rd = ($signed(rs1) < $signed(rs2))?1:0;
+end
+5:begin
+rd = rs1^rs2;
+end
+6:begin
+rd = rs1 >> (rs2[4:0]);
+end
+7:begin
+rd = $signed(rs1) >>> (rs2[4:0]);
+end
+8:begin
+rd = rs1|rs2;
+end
+9:begin
+rd = rs1&rs2;
+end
+default:begin
+rd = rs1+rs2;
+end
+endcase
+end
+endmodule

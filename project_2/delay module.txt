@@ -1,0 +1,9 @@
+module delay(clk,rd_address,rdd_add);
+input clk;
+input [4:0]rd_address;
+output reg [4:0]rdd_add;
+always@(posedge clk)
+begin
+rdd_add=rd_address;
+end
+endmodule

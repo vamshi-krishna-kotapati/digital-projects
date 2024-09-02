@@ -1,0 +1,33 @@
+module multiplier_tb();
+reg clk;
+reg [31:0] instructionset;
+wire[31:0] out;
+wire invalid;
+microprocessor_32_bit sys1 (clk,instructionset,out,invalid);
+initial clk = 0;
+always #10 clk = ~ clk;
+initial
+begin
+instructionset = 32’b0000000_00001_00000_000_00010_0000001; //add
+#20
+instructionset = 32’b0000000_00001_00000_001_00011_0000001; //sub
+#20
+instructionset = 32’b0000000_00101_00100_000_00110_0000011; //sll
+#20
+instructionset = 32’b0000000_01000_00111_000_01001_0000111; //slt
+#20
+instructionset = 32’b0000000_01000_00111_001_01010_0000111; //sltu
+#20
+instructionset = 32’b0000000_00001_00000_000_01011_0001111; //xor
+#20
+instructionset = 32’b0000000_00101_00100_001_01100_0000011; //srl
+#20
+instructionset = 32’b0000000_00101_00100_010_01101_0000011; //sra
+#20
+instructionset = 32’b0000000_00001_00000_001_01111_0001111; //or
+#20
+instructionset = 32’b0000000_00001_00000_010_01111_0001111; //and
+#80
+$finish;
+end
+endmodule

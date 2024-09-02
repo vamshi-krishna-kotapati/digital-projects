@@ -1,0 +1,15 @@
+module decode_unit( input clk,
+input [31:0] instructionset,
+output reg[6:0] opcode,
+output reg[2:0] funcn,
+output reg[4:0] rs1_address,
+output reg[4:0] rs2_address,
+output reg[4:0] rd_address);
+always @(posedge clk)begin
+opcode = instructionset[6:0];
+funcn = instructionset[14:12];
+rs1_address = instructionset[19:15];
+rs2_address = instructionset[24:20];
+rd_address = instructionset[11:7];
+end
+endmodule
