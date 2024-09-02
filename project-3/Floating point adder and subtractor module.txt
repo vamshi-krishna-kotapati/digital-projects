@@ -1,0 +1,76 @@
+module FP_AS(Res,A,B,AS);
+input [31:0]A,B;
+output reg [31:0]Res;
+input AS;
+reg Sa,Sb,Sc;
+reg [22:0]Ma,Mb,Mc;
+reg [7:0]Ea,Eb,Ec;
+reg EOP,Co;
+reg [23:0]M_a,M_b,M_c;
+reg [4:0]i=0,index=0;
+reg count=0;
+always @(*)
+begin
+Sa = A[31];
+Sb = B[31];
+Ma = A[22:0];
+Mb = B[22:0];
+Ea = A[30:23];
+Eb = B[30:23];
+//Normalise Mantissa
+M_a = {1’b1,Ma};
+M_b = {1’b1,Mb};
+end
+//Align Exponent
+always @(*)
+begin
+if(Ea >Eb)
+begin
+M_b = M_b >> (Ea - Eb);
+Ec = Ea;
+end
+else
+begin
+M_a = M_a >> (Eb - Ea);
+Ec = Eb;
+end
+end
+always @(*)
+begin
+EOP = Sa ^ Sb ^ AS; // find actual operation
+Sc = (M_a > M_b) ? Sa : Sb; //Decide sign bit based on largest mantissa
+// For magnitude subtract or add always from larger value
+// find if any carry exists
+if(M_a>M_b)
+begin
+{Co,M_c} = EOP ? (M_a - M_b) : (M_a + M_b);
+end
+else
+begin
+{Co,M_c} = EOP ? (M_b - M_a) : (M_b + M_a);
+Sc = EOP ? ~Sc:Sc;
+end
+if(EOP)
+begin
+count = 0; index =23;
+for(i = 23; i>0;i = i-1)
+begin
+if(M_c[i]==1 && count ==0)
+begin
+index = i;
+count = count +1’b1;
+end
+end
+M_c = M_c << (23-index);
+Mc = M_c[22:0];
+Ec = Ec - (23-index);
+end
+else
+begin
+// if carry right shift mantissa and increment exponent
+Mc = Co ? M_c[23:1]: M_c[22:0];
+Ec = Co ? (Ec + 1’b1): Ec;
+end
+Res = {Sc,Ec,Mc};
+end
+endmodule

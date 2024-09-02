@@ -1,0 +1,65 @@
+// Implementing of sigmoid Function using TAYLOR SERIES expansion.
+module sigmoid( x,y);
+input [31:0] x;
+output reg [31:0] y;
+//Assigning constatnts
+reg[31:0] constant1 = 32’b0_01111110_00100100110010101011010,//0.571859
+constant2 = 32’b0_01111101_10010010001100110001011,//0.392773
+constant3 = 32’b0_01111011_10111101010000101000000,//0.108706
+constant4 = 32’b0_01111000_11010010000001101100100,//0.014222
+constant5 = 32’b0_01110100_10000000110100111101000,//0.000734
+constant6 = 32’b0_01111101_10110110011010101001100,//0.428141
+constant7 = 32’b0_01111001_01010101010101010101011,//1/48
+constant8 = 32’b0_01110110_00010001000100010001001,//1/480
+constant9 = 32’b0_01111111_10000000000000000000000,//1.5
+constant10 = 32’b0_01111101_00000000000000000000000,//1/4
+constant11 = 32’b0_01111110_00000000000000000000000;//1/2
+wire [31:0] product1,product2,product3,product4,product5,
+product6,product7;
+wire [31:0] sum1,sum2,sum3,sum4;
+wire [31:0] square,cube,teri,penta;
+wire [31:0] add_sum1,add_sum2,
+overall_sum1,overall_sum2,overall_sum3;
+reg [31:0] sum;
+//
+fp_multiplier multiplier1(square,x,x);//X sqruared
+fp_multiplier multiplier2(cube,x,square);//x cubed
+fp_multiplier multiplier3(teri,cube,x);//X power 4
+fp_multiplier multiplier4(penta,teri,x);//X power 5
+fp_multiplier multiplier5(product1,x,constant2);//0.392773*x
+fp_multiplier multiplier6(product2,square,constant3);//0.108706 * X power 2
+fp_multiplier multiplier7(product3,cube,constant4);//0.014222 * X power 3
+fp_multiplier multiplier8(product4,teri,constant5);//0.000734 * X power 4
+fp_multiplier multiplier9(product5,x,constant10);//1/4*x
+fp_multiplier multiplier10(product6,cube,constant7);//1/48*x power 3
+fp_multiplier multiplier11(product7,penta,constant8);//1\480 x power 5
+FP_AS summ1(sum1,product1,product3,1’b0);//0.392773*x + 0.014222 * X power 3
+FP_AS summ2(sum2,product2,product4,1’b0);//0.108706 * X power 2 + //0.014222 *
+FP_AS summ4(add_sum1,sum1,sum2,1’b0); //sum1+sum2
+FP_AS summ6(overall_sum1,constant1,add_sum1,1’b0);// adding constant to it
+FP_AS summ3(sum3,product7,product5,1’b0);//1\480 x power 5 + 1/4*x
+FP_AS summ7(sum4,constant11,product6,1’b1);//1/2 - 1/48*x power 3
+FP_AS summ8(overall_sum2,sum3,sum4,1’b0); //sum3 +sum4
+FP_AS summ5(add_sum2,sum1,sum2,1’b1);
+FP_AS summ9(overall_sum3,constant6,add_sum2,1’b0);
+always @(*)begin
+if(x[31]==0)begin
+if(x[30:0]<constant9[30:0])
+begin
+sum = overall_sum2;
+end
+else if(x[30:0]>=constant9[30:0]) begin
+sum = overall_sum3;
+end
+end
+else if(x[31]==1)begin
+if(x[30:0]>=constant9[30:0])begin
+sum = overall_sum1;
+end
+else if(x[30:0]<constant9[30:0]) begin
+sum = overall_sum2;
+end
+end
+y = sum;
+end
+endmodule

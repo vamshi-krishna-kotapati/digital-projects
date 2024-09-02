@@ -1,0 +1,16 @@
+module FP_NORM(So,Eo,Mo,Sc,Ec,Mc);
+parameter E=8,M=23;
+input [E-1:0]Ec;
+input Sc;
+input [2*M+1:0]Mc;
+output So;
+output [E-1:0]Eo;
+output [M-1:0]Mo;
+reg S_1 = 1’b0;
+reg [E-1:0]E_1 = 0;
+reg [M-1:0]M_1 =0;
+//Normalisation logic
+assign Eo = Mc[2*M+1]?(Ec+1’d1):Ec;
+assign Mo = Mc[2*M+1]?Mc[2*M:M+1]:Mc[2*M-1:M];
+assign So = Sc;
+endmodule

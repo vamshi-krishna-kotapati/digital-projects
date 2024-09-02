@@ -1,0 +1,17 @@
+module FP_Arith(Sc,Ec,Mc,Sa,Ea,Ma,Sb,Eb,Mb
+);
+parameter E=8,M=23;
+input Sa,Sb;
+input [E-1:0] Ea,Eb;
+input [M-1:0]Ma,Mb;
+output Sc;
+output [E-1:0] Ec;
+output [2*M+1:0]Mc;
+wire [M:0] TMa,TMb;
+//Arithematic logic
+assign Sc = Sa^Sb;
+assign Ec = Ea+Eb-8’d127;
+assign TMa = {1’b1,Ma};
+assign TMb = {1’b1,Mb};
+assign Mc = TMa * TMb;
+endmodule

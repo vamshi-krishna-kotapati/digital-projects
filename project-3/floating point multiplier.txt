@@ -1,0 +1,28 @@
+module fp_multiplier(MUL,A,B);
+parameter E=8,M=23;
+input [M+E:0]A,B;
+//input [2:0]cont;
+output [M+E:0]MUL;
+wire S1,S2,S3,Sx;
+wire [E-1:0]E1,E2,E3,Ex;
+wire [M-1:0]M1,M2,M3;
+wire [2*M+1:0]MT;
+wire [M-1:0]Mx;
+wire [M+E:0]MUL_1;
+wire [M+E:0]MUL_2;
+wire out;
+//wire [23:0]My;
+//slicing logic
+assign S1=A[M+E];
+assign M1=A[M-1:0];
+assign E1=A[M+E-1:M];
+assign S2=B[M+E];
+assign M2=B[M-1:0];
+assign E2=B[M+E-1:M];
+FP_Arith FPA(S3,E3,MT,S1,E1,M1,S2,E2,M2);
+FP_NORM FPN(Sx,Ex,Mx,S3,E3,MT);
+//assign My = Mx+1;
+//assign MUL = {Sx,Ex,My[23:1]};
+assign MUL_1 = {Sx,Ex,Mx};
+assign MUL = MUL_1;
+endmodule
